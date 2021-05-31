@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+{% load static %}
+{% load staff_tags %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Posts | FORUMS</title>
+  <link rel="stylesheet" href="{% static 'css/Styleforum.css' %}">
+  <script src="https://kit.fontawesome.com/baf7f11007.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
+  <link href="{% static 'images/favicon.ico' %}" type="img/x-icon" rel="shortcut icon">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <link href="{% static 'css/forumcss/my_post.css' %}" rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <!--NavBar Section-->
+    <div class="navbar">
+      <nav class="navigation hide" id="navigation">
+        <span class="close-icon" id="close-icon" onclick="showIconBar()"><i class="fa fa-close"></i></span>
+        <ul class="nav-list">
+
+          <li class="nav-item"><a href="{% url 'forums:forumcategroies' %}">Forums</a></li>
+          <li class="nav-item"><a href="{% url 'forums:my_post' %}">My Posts</a></li>
+          <li class="nav-item"><a href="{% url 'game' %}">Homepage</a></li>
+        </ul>
+      </nav>
+      <a class="bar-icon" id="iconBar" onclick="hideIconBar()"><i class="fa fa-bars"></i></a>
+      <div class="brand"><img src="{% static 'images/logo.png' %}" width="150px" /></div>
+
+
+      <div class="account-info">
+        <img style="border-radius: 50%;" width="20px" height="20px" src="{{ Userdetails.url }}">
+        {{ request.session.Username }}
+
+        <div class="dropdown" style="float:right;">
+          <button class="fas fa-sort-down" style="color: #FF0042;"></button>
+          <div class="dropdown-content">
+            <a href="my_profile/">My profile</a>
+            <a href="{% url 'signin' %}">Sign out</a>
+
+          </div>
+        </div>
+
+        <br>
+        <h5 class="account-sub">{{ request.session.Useremail }}</h5>
+      </div>
+ </div>
+
+    <div class="navigate header2">
+      &nbsp; <span><a href="categories">Forums</a> > <a href="">My Posts</a></span>
+    </div>
+  </header>
+
+
+  <div id="dialogdelete" style="display:none;" title="Delete Post">
+
+    <div id="dialog-form" title="Delete post">
+
+
+      <h2>Are you sure you want to delete this post?</h2>
+      <form><br> <br><br> <br><br> <br>
+        <fieldset>
+          <button class="cancel" type="submit" tabindex="-1" value=""
+            style="position:relative;left:10% ;top:60 px; font-family: 'Bebas Neue';font-size: 20px;">Cancel</button>
+
+          <button class="link-deletepost" type="submit" tabindex="-1" value=""
+            style="width:50px;position:relative;left:39% ;top:60 px; font-family: 'Bebas Neue';font-size: 20px;">Delete</button>
+
+        </fieldset>
+      </form>
+
+
+    </div>
+  </div>
+
+  <div id="dialog" style="display:none;" title="Edit Post">
+
+    <div class="dialog-form" title="Edit post">
+
+
+      <form>
+        <fieldset>
+          <label for="title">Post title</label>
+          <input type="text" name="title" id="title" value="" class="text ui-widget-content ui-corner-all"><br>
+          <label for="body">Post body</label>
+          <input type="text" name="body" id="body" value="" class="text ui-widget-content ui-corner-all"><br>
+
+          <p>Insert image</p>
+          <input id="image" type="file">
+          <p style="font-size: 10px; color: silver; margin-top: 5px;">*only .jpg, .bmp, .png, .tif, .gif are accepted.
+          </p>
+
+          <br>
+          <button type="submit" tabindex="-1" id="submiteditpost" value=""
+            style="position:relative;left:39% ;top:60 px; font-family: 'Bebas Neue';font-size: 20px;">Save
+            edits</button>
+
+        </fieldset>
+      </form>
+    </div>
+  </div>
+  <div id="snackbar">Post added successfully !</div>
+  <div class="container">
+    <!--Navigation-->
+
+    <h1><a>You have a total of {{ count }} posts published </a></h1>
+    <br><br>
+
+    <br>
+
+    <!--Display posts table-->
+
+    <div class="posts-table">
+      <div class="table-head">
+
+        <div class="subjects">&nbsp;&nbsp;Subjects</div>
+        <div class="replies">&nbsp;&nbsp; Comments/Views</div>
+        <div class="last-reply">&nbsp;&nbsp; Actions</div>
+      </div>
+      {% for item in items %}
+      <div class="table-row">
+
+        <div class="subjects">
+          <a href="{% url 'forums:Post_detail' item.id %}" class="goback">&nbsp;&nbsp;{{ item.title  }}</a>
+          <br>
+          &nbsp;&nbsp;{{item.timestamp|timesince }} ago
+
+
+        </div>
+        <div class="replies">
+
+
+          {% countcommments item.id as add_users_flag %}
+          {% countviews item.id as countofviews %}
+          <p class="values"> <i class="fas fa-comments fa-1x"></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ add_users_flag }}
+            &nbsp;&nbsp;&nbsp;&nbsp;<i class="far fa-eye fa-1x"></i></i>&nbsp;&nbsp;&nbsp;{{ countofviews }}</p>
+
+        </div>
+
+        <div class="last-reply">
+          <button class='link-delete goback'
+            onclick="editpost('{{ item.id }}','{{ item.title|escapejs }}', '{{ item.body|escapejs }}' )"
+            id="opener"><b><a style="font-family: 'Bebas Neue';">Edit</a></b></button>
+          &nbsp; <a style="display:none;" id="editurl" href="{% url 'forums:editpost' item.id %}"></a>
+          <!--href=" {% url 'forums:deletepost' item.id %} "  class='link-deletepost'-->
+
+          <button class='link-delete goback'
+            onclick="deletepost('{{ item.id }}','{{ item.title|escapejs }}', '{{ item.body|escapejs }}' ,this)"><b><a
+                style="font-family: 'Bebas Neue';">Delete</a></b></button>
+
+          <!--                    <b>  <a onclick="deletepost'{{ item.id }}','{{ item.title|escapejs }}', '{{ item.body|escapejs }}'"> Delete </a> </b>-->
+        </div>
+      </div>
+      {% endfor %}
+
+      <!--ends here-->
+    </div>
+    <!--Pagination starts-->
+
+    <div class="footer-number">
+      {% if page.has_previous %}
+          <a href="{% url 'forums:forum' %}?page={{page.previous_page_number}}">Previous Page</a>&nbsp;|&nbsp;
+      {% endif %}
+      {% if page.has_next %}
+          <a href="{% url 'forums:forum' %}?page={{page.next_page_number}}">Next Page</a>
+      {% endif %}
+
+  </div>
+
+
+    <!--pagination ends-->
+  </div>
+
+  <div id="page-container">
+    <div id="content-wrap">
+    </div>
+
+    <footer id="footer">
+      <span>&copy; 2021 AIMARENA. All Rights Reserved</span>
+    </footer>
+  </div>
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="{% static 'js/forummain.js' %}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    editpost = function (id, val, body) {
+      $("#title").val(val);
+      $("#body").val(body.replace(/(<([^>]+)>)/gi, ""));
+      $("#dialog").css("background-color", "black");
+      $("#dialog").dialog("open");
+      $('#submiteditpost').val(id);
+    }
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    var csrftoken = '{{csrf_token}}'
+  </script>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script src="{% static 'js/forumjs/my_post.js' %}"></script>
+
+
+</body>
+
+</html>

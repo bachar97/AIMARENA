@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }} | FORUMS</title>
+    <link rel="stylesheet" href="{% static 'css/Styleforum.css' %}">
+    <link href="{% static 'images/favicon.ico' %}" type="img/x-icon" rel="shortcut icon">
+    <script src="https://kit.fontawesome.com/baf7f11007.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap" rel="stylesheet">
+
+
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% block css %}
+    {% endblock %}
+<style>
+
+    #dialog-form  label { display:block; }
+    #dialog-form  input { display:block; }
+    #dialog-form  input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    #dialog-form  fieldset { padding:0; border:0; margin-top:25px; }
+    .ui-dialog-title{
+    font-size: 110% !important;
+    color: #000 !important;
+
+}
+.ui-dialog-content{
+    font-size: 110% !important;
+    color: #ffffff !important;
+
+}
+.ui-dialog.ui-widget-content { background: #2C2C2C; }
+   .modal   button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  float: right;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  font-family: 'Bebas Neue';
+  right: 0;
+  font-size: 20px;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 3;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+    <header>
+        <div class="navbar">
+            <nav class="navigation hide" id="navigation">
+                <span class="close-icon" id="close-icon" onclick="showIconBar()"><i class="fa fa-close"></i></span>
+                <ul class="nav-list">
+                  
+                  <li class="nav-item"><a href="{% url 'forums:forumcategroies' %}">Forums</a></li>
+                  <li class="nav-item"><a href="{% url 'forums:my_post' %}">My Posts</a></li>
+                  <li class="nav-item"><a href="{% url 'game' %}">Homepage</a></li>
+              </ul>
+            </nav>
+            <a class="bar-icon" id="iconBar" onclick="hideIconBar()"><i class="fa fa-bars"></i></a>
+          <div class="brand"><img src="{% static 'images/logo.png' %}" width="150px"/></div>
+
+
+          {% if request.session.Username %}
+
+
+          <div class="account-info">
+    
+            <div class="dropdown" style="float:right; z-index: 3;">
+              <button class="fas fa-sort-down" style="color: #FF0042;"></button>
+              <div class="dropdown-content">
+                <a href="my_profile">My profile</a>
+                <a href="{% url 'signout' %}">Sign out</a>
+    
+              </div>
+            </div>
+    
+    
+    
+            </i><img style="border-radius: 50%;" width="20px" height="20px" src="{{ Userdetails.url }}">
+            {{ request.session.Username }}<h5 class="account-sub">{{ request.session.Useremail }}</h5>
+    
+    
+            {% else %}
+    
+            <div class="account-info">
+    
+    
+              <a href="{% url 'signin' %}">Login</a> &nbsp;&nbsp;<span style="font-size: 18px;">OR</span>&nbsp;&nbsp; <a
+                href="{% url 'signup' %}">Register</a> </div>
+    
+    
+            {% endif %}
+    
+          </div>
+    
+        </div>
+       
+        </div>
+
+<div class="navigate header2">
+  &nbsp; <span><a href="categories">Forums</a> > <a href="">{{ post.title }}</a></span>
+</div>
+
+</header>
+
+        <div class="latest-posts" style="font-family: Arial, Helvetica, sans-serif;">
+   
+            <div class="container">
+              {% block content %}
+     
+    
+              {% endblock %}
+            </div>
+       
+          </div>
+
+        </div>
+
+
+        <br><br><br><br>
+
+
+        <div id="page-container">
+          <div id="content-wrap">
+          </div>
+          
+        <footer id="footer">
+          <span>&copy; 2021 AIMARENA. All Rights Reserved</span>
+        </footer>
+        </div>
+
+    
+    
+    <script src="{% static 'js/forummain.js' %}"></script>
+</body>
+</html>

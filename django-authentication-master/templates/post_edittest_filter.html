@@ -1,0 +1,62 @@
+{% load staff_tags %}<!--Navigation-->
+
+
+<h1><a>You have a total of {{ count }} posts published </a></h1>
+        <!--Display posts table-->
+<br><br>
+        <div class="posts-table">
+            <div class="table-head">
+
+                <div class="subjects">&nbsp;&nbsp;Subjects</div>
+                <div class="replies">&nbsp;&nbsp; Comments/Views</div>
+                <div class="last-reply">&nbsp;&nbsp; Actions</div>
+            </div>
+            {% for item in items %}
+            <div class="table-row">
+
+                <div class="subjects">
+                    <a href="{% url 'forums:Post_detail' item.id %}" class="goback">&nbsp;&nbsp;{{ item.title  }}</a>
+                    <br>
+                    &nbsp;&nbsp;{{item.timestamp|timesince }} ago
+
+
+                </div>
+                <div class="replies">
+                {% countcommments item.id as add_users_flag %}
+  {% countviews item.id as countofviews %}
+
+
+                  <p class="values">  <i class="fas fa-comments fa-1x"></i>   &nbsp;&nbsp;&nbsp; {{ item.Post.count }} &nbsp;&nbsp;&nbsp;&nbsp;<i class="far fa-eye fa-1x"></i></i>&nbsp;&nbsp;&nbsp;{{ countofviews }}</p>
+                </div>
+
+            <div class="last-reply">
+<button class='link-delete goback' onclick="editpost('{{ item.id }}','{{ item.title|escapejs }}', '{{ item.body|escapejs }}' )"  id="opener"><b><a style="font-family: 'Bebas Neue';">Edit</a></b></button>
+                 &nbsp; <a style="display:none;" id="editurl" href="{% url 'forums:editpost' item.id %}" ></a>
+<!--href=" {% url 'forums:deletepost' item.id %} "  class='link-deletepost'-->
+
+                  <button class='link-delete goback' onclick="deletepost('{{ item.id }}','{{ item.title|escapejs }}', '{{ item.body|escapejs }}' ,this)" ><b><a style="font-family: 'Bebas Neue';">Delete</a></b></button>
+
+<!--                    <b>  <a onclick="deletepost'{{ item.id }}','{{ item.title|escapejs }}', '{{ item.body|escapejs }}'"> Delete </a> </b>-->
+                </div>
+            </div>
+            {% endfor %}
+
+
+
+            <!--ends here-->
+        </div>
+        <!--Pagination starts-->
+        <div class="footer-number">
+            {% if page.has_previous %}
+                <a href="{% url 'forums:forum' %}?page={{page.previous_page_number}}">Previous Page</a>&nbsp;|&nbsp;
+            {% endif %}
+            {% if page.has_next %}
+                <a href="{% url 'forums:forum' %}?page={{page.next_page_number}}">Next Page</a>
+            {% endif %}
+
+        </div>
+        <!--pagination ends-->
+<script>
+
+
+</script>
